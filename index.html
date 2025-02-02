@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İngilizce Öğrenme Asistanı</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .target-word {
+            color: #0d6efd;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .target-word:hover {
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+        .translation-popup {
+            position: absolute;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 1000;
+        }
+        .story-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-top: 30px;
+        }
+        .nav-pills .nav-link.active {
+            background-color: #0d6efd;
+        }
+        .progress {
+            height: 5px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="/">İngilizce Öğrenme Asistanı</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/words">Kelimeler</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">Günlük İngilizce Hikaye</h4>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle-fill"></i>
+                            Bu uygulama, Ebbinghaus'un unutma eğrisi metodunu kullanarak İngilizce kelime öğrenmenize yardımcı olur. 
+                            Kelimelerin üzerine tıklayarak Türkçe anlamlarını görebilirsiniz.
+                        </div>
+
+                        <form action="/generate-story" method="POST" class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-book"></i> Yeni Hikaye Oluştur
+                            </button>
+                        </form>
+
+                        {% if story %}
+                        <div class="story-container mt-4">
+                            <h5 class="mb-3">Günün Hikayesi:</h5>
+                            <div id="story-content" class="mb-4">{{ story|safe }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="translation-popup" class="translation-popup"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const storyContent = document.getElementById('story-content');
+            const popup = document.getElementById('translation-popup');
+            
+            if (storyContent) {
+                // Markdown formatındaki kelimeleri HTML formatına dönüştür
+                let content = storyContent.innerHTML;
+                content = content.replace(/\*\*(\w+)\*\* \(([^)]+)\)/g, 
+                    '<span class="target-word" data-translation="$2">$1</span>');
+                storyContent.innerHTML = content;
+
+                // Kelimelere tıklama olayı ekle
+                document.querySelectorAll('.target-word').forEach(word => {
+                    word.addEventListener('click', function(e) {
+                        const translation = this.dataset.translation;
+                        popup.textContent = translation;
+                        popup.style.display = 'block';
+                        popup.style.left = e.pageX + 'px';
+                        popup.style.top = (e.pageY + 20) + 'px';
+                    });
+                });
+
+                // Popup'ı kapatma
+                document.addEventListener('click', function(e) {
+                    if (!e.target.classList.contains('target-word')) {
+                        popup.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html> 
